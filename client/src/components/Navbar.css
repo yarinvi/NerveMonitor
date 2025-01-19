@@ -1,0 +1,334 @@
+.navbar {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  height: 64px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.nav-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  font-size: 1.3rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: all 0.3s ease;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-links a {
+  color: #4a5568;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  padding: 0.5rem 0;
+  position: relative;
+}
+
+/* Remove underline animation for nav-button */
+.nav-links a:not(.nav-button)::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary-green), var(--secondary-green));
+  transition: width 0.3s ease;
+  border-radius: 2px;
+}
+
+.nav-links a:not(.nav-button):hover::after {
+  width: 100%;
+}
+
+.nav-button, a.nav-button {
+  background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  border: none;
+  font-weight: 500;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  box-shadow: 0 2px 4px rgba(46, 125, 50, 0.15);
+  white-space: nowrap;
+}
+
+.nav-button svg {
+  font-size: 0.85rem;
+}
+
+.nav-button:hover, a.nav-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(46, 125, 50, 0.2);
+  background: linear-gradient(135deg, var(--secondary-green), var(--primary-green));
+}
+
+.hamburger {
+  display: none;
+  border: none;
+  background: rgba(74, 85, 104, 0.05);
+  cursor: pointer;
+  padding: 0.5rem;
+  color: #4a5568;
+  transition: all 0.2s ease;
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+}
+
+.hamburger:hover {
+  background: rgba(46, 125, 50, 0.1);
+  color: var(--primary-green);
+}
+
+@media (max-width: 900px) {
+  .nav-links {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-container {
+    padding: 0 1rem;
+  }
+
+  .hamburger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+  }
+
+  .nav-links {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.99);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    flex-direction: column;
+    padding: 0;
+    gap: 0.75rem;
+    height: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .nav-links.active {
+    height: auto;
+    padding: 1rem;
+  }
+
+  .nav-links a {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+
+  .nav-links a:hover {
+    background: none;
+  }
+
+  .nav-button, a.nav-button {
+    width: 100%;
+    justify-content: center;
+    padding: 0.75rem;
+  }
+
+  .dropdown-menu {
+    position: static;
+    width: 100%;
+    box-shadow: none;
+    margin-top: 0.5rem;
+    opacity: 0;
+    visibility: hidden;
+    height: 0;
+    transform: none;
+  }
+
+  .dropdown-menu.show {
+    opacity: 1;
+    visibility: visible;
+    height: auto;
+  }
+}
+
+/* Add separator for private pages */
+.nav-separator {
+  height: 24px;
+  width: 1px;
+  background: rgba(74, 85, 104, 0.2);
+  margin: 0 0.5rem;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .nav-separator {
+    height: 1px;
+    width: 100%;
+    background: rgba(74, 85, 104, 0.2);
+    margin: 0.5rem 0;
+  }
+}
+
+.user-menu-container {
+  position: relative;
+  margin-left: 1rem;
+  z-index: 1002;
+}
+
+.menu-button {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  color: #4a5568;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.menu-button:hover {
+  border-color: var(--primary-green);
+}
+
+.dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  width: 220px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 0.5rem;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.2s ease;
+  z-index: 1003;
+}
+
+.dropdown-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: #4a5568;
+  text-decoration: none;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin: 0;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: rgba(74, 85, 104, 0.2);
+  margin: 0.5rem 0;
+}
+
+/* Make button match Link styles exactly */
+button.dropdown-item {
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  margin: 0;
+}
+
+.dropdown-item:hover {
+  background: rgba(46, 125, 50, 0.1);
+  color: var(--primary-green);
+}
+
+@media (max-width: 768px) {
+  .user-menu-container {
+    width: 100%;
+    margin: 0.5rem 0;
+  }
+
+  .menu-button {
+    width: 100%;
+  }
+
+  .dropdown-menu {
+    position: static;
+    width: 100%;
+    box-shadow: none;
+    margin-top: 0.5rem;
+    opacity: 0;
+    visibility: hidden;
+    height: 0;
+    transform: none;
+  }
+}
+
+.menu-button-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dropdown-arrow {
+  transition: transform 0.2s ease;
+}
+
+.dropdown-arrow.rotate {
+  transform: rotate(180deg);
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: rgba(74, 85, 104, 0.2);
+  margin: 0.5rem 0;
+} 

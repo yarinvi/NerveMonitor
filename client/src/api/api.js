@@ -30,10 +30,23 @@ export const getUserDevices = async () => {
     }
 };
 
-export const getDeviceData = async (deviceId) => {
+export const getDeviceData = async (deviceId, etag = null) => {
     try {
-        const { data } = await api.get(`/device/${deviceId}/data`);
-        return data;
+        const headers = {};
+        if (etag) {
+            headers['If-None-Match'] = etag;
+        }
+        
+        const { data, headers: responseHeaders, status } = await api.get(`/device/${deviceId}/data`, {
+            headers,
+            validateStatus: status => status < 500
+        });
+        
+        return {
+            data: status === 304 ? null : data,
+            etag: responseHeaders.etag,
+            modified: status !== 304
+        };
     } catch (error) {
         throw new Error('Failed to fetch device data');
     }

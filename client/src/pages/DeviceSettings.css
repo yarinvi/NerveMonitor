@@ -95,7 +95,7 @@
 .color-picker-popover {
   position: absolute;
   z-index: 2;
-  top: calc(100% + 10px);
+  bottom: calc(100% + 10px);
   left: 50%;
   transform: translateX(-50%);
 }
@@ -241,13 +241,4 @@
   }
 } 
 
-/* Remove custom toast styles */
-.Toastify__toast {
-  border-radius: 4px !important;
-  padding: 8px 16px !important;
-  font-size: 0.9rem !important;
-}
 
-.Toastify__toast-icon {
-  margin-right: 10px !important;
-} 

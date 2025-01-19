@@ -70,7 +70,11 @@ function AttackHistory() {
     
     const fetchAttackHistory = async () => {
       try {
-        const data = await getDeviceData(selectedDevice);
+        const response = await getDeviceData(selectedDevice);
+        
+        // Handle nested data structure
+        const data = response.data;
+        
         if (data && data.data && data.data.history) {
           const historyArray = Array.isArray(data.data.history) 
             ? data.data.history 

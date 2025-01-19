@@ -7,6 +7,8 @@ import { useInView } from 'react-intersection-observer';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { FiInfo } from 'react-icons/fi';
 import { Tooltip } from '@mui/material';
+import { socketService } from '../services/socketService';
+import { getAuthToken } from '../api/auth';
 
 function Dashboard() {
   const [devices, setDevices] = useState([]);
@@ -47,6 +49,23 @@ function Dashboard() {
   };
 
   useEffect(() => {
+    const initializeSocket = () => {
+      try {
+        socketService.connect();
+      } catch (err) {
+        console.error('Failed to initialize socket:', err);
+        setError('Failed to connect to real-time updates');
+      }
+    };
+
+    initializeSocket();
+
+    return () => {
+      socketService.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
     const fetchDevices = async () => {
       try {
         setLoading(true);
@@ -74,41 +93,58 @@ function Dashboard() {
   useEffect(() => {
     if (!selectedDevice) return;
 
-    const fetchData = async () => {
+    const fetchInitialData = async () => {
       try {
-        const data = await getDeviceData(selectedDevice);
-        const devicesData = await getUserDevices();
+        setLoading(true);
+        const response = await getDeviceData(selectedDevice);
         
-        // Update devices list to get latest names
-        const formattedDevices = Object.entries(devicesData).map(([id, device]) => ({
-          id,
-          ...device
-        }));
-        setDevices(formattedDevices);
+        // Handle nested data structure
+        const data = response.data.data;  // Get the nested data object
         
         const processedData = {
-          bpm: data?.data?.bpm ?? '--',
-          spo2: data?.data?.spo2 ?? '--',
-          internal_temperature: data?.data?.internal_temperature ?? '--',
-          motor_state: data?.data?.motor_state ?? 0,
-          history: Array.isArray(data?.data?.history) 
-            ? data.data.history 
-            : data?.data?.history 
-              ? [data.data.history] 
+          bpm: data?.bpm !== undefined ? data.bpm : '--',
+          spo2: data?.spo2 !== undefined ? data.spo2 : '--',
+          internal_temperature: data?.internal_temperature !== undefined ? data.internal_temperature : '--',
+          motor_state: data?.motor_state ?? 0,
+          history: Array.isArray(data?.history) 
+            ? data.history 
+            : data?.history 
+              ? [data.history] 
               : []
         };
         
         setDeviceData(processedData);
         setError('');
       } catch (err) {
-        console.error('Error fetching device data:', err);
         setError('Failed to fetch device data');
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchData();
-    const interval = setInterval(fetchData, 2000);
-    return () => clearInterval(interval);
+    fetchInitialData();
+
+    const handleDeviceUpdate = (data) => {
+      if (!data?.data) {
+        return;
+      }
+
+      const processedData = {
+        bpm: data.data.bpm ?? '--',
+        spo2: data.data.spo2 ?? '--',
+        internal_temperature: data.data.internal_temperature ?? '--',
+        motor_state: data.data.motor_state ?? 0,
+        history: data.data.history ? [data.data.history] : []
+      };
+
+      setDeviceData(processedData);
+    };
+
+    socketService.subscribeToDevice(selectedDevice, handleDeviceUpdate);
+
+    return () => {
+      socketService.unsubscribeFromDevice(selectedDevice);
+    };
   }, [selectedDevice]);
 
   const DeviceSelector = ({ devices, selectedDevice, onDeviceChange }) => {
@@ -176,9 +212,21 @@ function Dashboard() {
           variants={containerVariants}
         >
           {[
-            { title: "Heart Rate", value: `${deviceData?.bpm || '--'} BPM` },
-            { title: "SpO2", value: `${deviceData?.spo2 || '--'}%` },
-            { title: "Temperature", value: `${deviceData?.internal_temperature || '--'}°C` },
+            { 
+              title: "Heart Rate", 
+              value: deviceData?.bpm ?? '--',
+              unit: " BPM"
+            },
+            { 
+              title: "SpO2", 
+              value: deviceData?.spo2 ?? '--',
+              unit: "%"
+            },
+            { 
+              title: "Temperature", 
+              value: deviceData?.internal_temperature ?? '--',
+              unit: "°C"
+            },
             { 
               title: "Motor State", 
               value: deviceData?.motor_state ? 'Active' : 'Inactive',
@@ -196,7 +244,7 @@ function Dashboard() {
             >
               <h3>{stat.title}</h3>
               <div className={`stat-value ${stat.isActive ? 'active' : ''}`}>
-                {stat.value}
+                {stat.value}{stat.unit}
               </div>
             </motion.div>
           ))}

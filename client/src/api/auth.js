@@ -48,3 +48,15 @@ export const checkAuthStatus = async () => {
         throw new Error(message);
     }
 };
+
+export const getAuthToken = async () => {
+    try {
+        const { data } = await api.get('/auth/token', {
+            withCredentials: true
+        });
+        return data.token;
+    } catch (error) {
+        const message = error.response?.data?.error || 'Failed to get authentication token';
+        throw new Error(message);
+    }
+};

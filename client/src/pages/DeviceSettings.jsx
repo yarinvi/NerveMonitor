@@ -16,7 +16,6 @@ function DeviceSettings() {
   const [error, setError] = useState('');
   const [devices, setDevices] = useState([]);
   const [selectedDevice, setSelectedDevice] = useState(null);
-  const [success, setSuccess] = useState('');
   const [showColorPicker, setShowColorPicker] = useState(false);
 
   const [formRef, formInView] = useInView({
@@ -79,14 +78,18 @@ function DeviceSettings() {
 
     const fetchSettings = async () => {
       try {
-        const data = await getDeviceData(selectedDevice);
+        const response = await getDeviceData(selectedDevice);
+        
+        // Handle nested data structure
+        const settings = response.data.settings;
+        
         setSettings({
-          bpm_threshold: data.settings?.bpm_threshold ?? 120,
-          spo2_threshold: data.settings?.spo2_threshold ?? 95,
-          temperature_threshold: data.settings?.temperature_threshold ?? 36.5,
-          sensitivity: data.settings?.sensitivity ?? 'medium',
-          vibration_intensity: data.settings?.vibration_intensity ?? 50,
-          led_color: data.settings?.led_color ?? '#4CAF50'
+          bpm_threshold: settings?.bpm_threshold !== undefined ? settings.bpm_threshold : 120,
+          spo2_threshold: settings?.spo2_threshold !== undefined ? settings.spo2_threshold : 95,
+          temperature_threshold: settings?.temperature_threshold !== undefined ? settings.temperature_threshold : 36.5,
+          sensitivity: settings?.sensitivity !== undefined ? settings.sensitivity : 'medium',
+          vibration_intensity: settings?.vibration_intensity !== undefined ? settings.vibration_intensity : 50,
+          led_color: settings?.led_color !== undefined ? settings.led_color : '#4CAF50'
         });
       } catch (err) {
         setError('Failed to load device settings');
@@ -109,11 +112,9 @@ function DeviceSettings() {
     e.preventDefault();
     try {
       setError('');
-      setSuccess('');
       setLoading(true);
       await updateDeviceSettings(selectedDevice, settings);
       toast.success('Settings updated successfully');
-      setSuccess('Settings updated successfully');
     } catch (err) {
       toast.error('Failed to update settings');
       setError('Failed to update settings');
@@ -122,8 +123,14 @@ function DeviceSettings() {
     }
   };
 
-  const handleColorPickerClose = () => {
-    setShowColorPicker(false);
+  const handleColorPickerClose = (e) => {
+    // Only close if clicking outside both the color preview and picker
+    const colorPreview = document.querySelector('.color-preview');
+    const colorPicker = document.querySelector('.color-picker-popover');
+    
+    if (!colorPreview?.contains(e.target) && !colorPicker?.contains(e.target)) {
+      setShowColorPicker(false);
+    }
   };
 
   useEffect(() => {
@@ -134,20 +141,6 @@ function DeviceSettings() {
       };
     }
   }, [showColorPicker]);
-
-  useEffect(() => {
-    let timeoutId;
-    if (success) {
-      timeoutId = setTimeout(() => {
-        setSuccess('');
-      }, 4000);
-    }
-    return () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-    };
-  }, [success]);
 
   const renderSliderWithTooltip = (name, label, value, min, max, tooltip, step = 1) => (
     <motion.div 
@@ -231,17 +224,6 @@ function DeviceSettings() {
               animate={{ opacity: 1, x: 0 }}
             >
               {error}
-            </motion.div>
-          )}
-          
-          {success && (
-            <motion.div 
-              className="success-message"
-              variants={itemVariants}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-            >
-              {success}
             </motion.div>
           )}
         </motion.div>
@@ -336,6 +318,14 @@ function DeviceSettings() {
                       onChange={(color) => handleChange({ 
                         target: { name: 'led_color', value: color.hex } 
                       })}
+                      disableAlpha={true}
+                      styles={{
+                        default: {
+                          picker: {
+                            boxShadow: 'none'
+                          }
+                        }
+                      }}
                     />
                   </div>
                 )}

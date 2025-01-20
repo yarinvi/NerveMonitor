@@ -241,4 +241,56 @@
   }
 } 
 
+[data-theme='dark'] .device-settings {
+  background: var(--dark-primary);
+}
+
+[data-theme='dark'] .setting-item {
+  background: var(--dark-secondary);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .setting-item h3 {
+  color: var(--dark-text);
+}
+
+[data-theme='dark'] .setting-description {
+  color: var(--dark-text-secondary);
+}
+
+[data-theme='dark'] .setting-item .MuiSlider-thumb {
+  background-color: var(--dark-accent);
+}
+
+[data-theme='dark'] .setting-item .MuiSlider-track {
+  background-color: var(--dark-accent);
+}
+
+[data-theme='dark'] .styled-select {
+  background-color: var(--dark-secondary);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--dark-text);
+}
+
+[data-theme='dark'] .styled-select:hover {
+  border-color: var(--dark-accent);
+}
+
+[data-theme='dark'] .styled-select:focus {
+  border-color: var(--dark-accent);
+  box-shadow: 0 0 0 2px rgba(220, 20, 60, 0.1);
+}
+
+[data-theme='dark'] .color-preview {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .success-message {
+  background-color: rgba(220, 20, 60, 0.2);
+}
+
+[data-theme='dark'] .error-message {
+  background-color: rgba(220, 20, 60, 0.2);
+}
+
 

@@ -109,4 +109,51 @@
   .auth-container {
     padding: 2rem;
   }
+}
+
+[data-theme='dark'] .auth-page {
+  background-color: var(--dark-primary);
+}
+
+[data-theme='dark'] .auth-container {
+  background: var(--dark-secondary);
+}
+
+[data-theme='dark'] .auth-container h2 {
+  color: var(--dark-accent);
+}
+
+[data-theme='dark'] .form-group input {
+  background: var(--dark-primary);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--dark-text);
+}
+
+[data-theme='dark'] .form-group input:focus {
+  border-color: var(--dark-accent);
+  box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.1);
+}
+
+[data-theme='dark'] .form-group input::placeholder {
+  color: var(--dark-text-secondary);
+}
+
+[data-theme='dark'] .auth-container button {
+  background-color: var(--dark-accent);
+}
+
+[data-theme='dark'] .auth-container button:hover:not(:disabled) {
+  background-color: var(--dark-accent-hover);
+}
+
+[data-theme='dark'] .auth-redirect {
+  color: var(--dark-text);
+}
+
+[data-theme='dark'] .auth-redirect a {
+  color: var(--dark-accent);
+}
+
+[data-theme='dark'] .auth-redirect a:hover {
+  color: var(--dark-accent-hover);
 } 

@@ -47,8 +47,8 @@
   position: relative;
 }
 
-/* Remove underline animation for nav-button */
-.nav-links a:not(.nav-button)::after {
+/* Remove underline animation for nav-button and make it specific to main nav links */
+.nav-links > a:not(.nav-button)::after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -60,7 +60,7 @@
   border-radius: 2px;
 }
 
-.nav-links a:not(.nav-button):hover::after {
+.nav-links > a:not(.nav-button):hover::after {
   width: 100%;
 }
 
@@ -184,21 +184,42 @@
   }
 }
 
-/* Add separator for private pages */
+/* Update the separator styles */
 .nav-separator {
   height: 24px;
-  width: 1px;
-  background: rgba(74, 85, 104, 0.2);
-  margin: 0 0.5rem;
+  width: 2px;
+  background: #e2e8f0;
+  margin: 0 1rem;
+  display: inline-block;
+}
+
+/* Dark mode separator */
+[data-theme='dark'] .nav-separator {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* Mobile styles */
 @media (max-width: 768px) {
   .nav-separator {
-    height: 1px;
-    width: 100%;
-    background: rgba(74, 85, 104, 0.2);
-    margin: 0.5rem 0;
+    height: 2px;
+    width: 80%;
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgba(0, 0, 0, 0.15),
+      transparent
+    );
+    margin: 0.5rem auto;
+    display: block;
+  }
+
+  [data-theme='dark'] .nav-separator {
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgba(255, 255, 255, 0.15),
+      transparent
+    );
   }
 }
 
@@ -331,4 +352,74 @@ button.dropdown-item {
   height: 1px;
   background: rgba(74, 85, 104, 0.2);
   margin: 0.5rem 0;
+}
+
+.theme-toggle {
+  background: none;
+  border: none;
+  color: #4a5568;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.theme-toggle:hover {
+  background: rgba(46, 125, 50, 0.1);
+  color: var(--primary-green);
+}
+
+[data-theme='dark'] .theme-toggle {
+  color: var(--dark-text);
+}
+
+[data-theme='dark'] .theme-toggle:hover {
+  background: rgba(220, 20, 60, 0.1);
+  color: var(--dark-accent);
+}
+
+/* Update existing styles for dark mode */
+[data-theme='dark'] .navbar {
+  background: rgba(45, 45, 45, 0.98);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .nav-links a {
+  color: var(--dark-text);
+}
+
+[data-theme='dark'] .dropdown-menu {
+  background: var(--dark-secondary);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .dropdown-item {
+  color: var(--dark-text);
+}
+
+[data-theme='dark'] .dropdown-item:hover {
+  background: rgba(220, 20, 60, 0.1);
+  color: var(--dark-accent);
+}
+
+[data-theme='dark'] .menu-button {
+  background: var(--dark-secondary);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--dark-text);
+}
+
+[data-theme='dark'] .menu-button:hover {
+  border-color: var(--dark-accent);
+}
+
+[data-theme='dark'] .nav-links {
+  background: var(--dark-secondary);
+}
+
+[data-theme='dark'] .nav-links.active {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 } 

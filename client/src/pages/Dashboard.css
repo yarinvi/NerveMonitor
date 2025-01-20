@@ -275,4 +275,44 @@ tr:hover td {
   margin-top: 0.5rem;
   opacity: 0.8;
   font-style: italic;
+}
+
+[data-theme='dark'] .dashboard {
+  background: var(--dark-primary);
+}
+
+[data-theme='dark'] .dashboard-header {
+  background: var(--dark-secondary);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .dashboard-header h1 {
+  color: var(--dark-text);
+}
+
+[data-theme='dark'] .settings-button {
+  background-color: var(--dark-accent);
+}
+
+[data-theme='dark'] .settings-button:hover {
+  background-color: var(--dark-accent-hover);
+}
+
+[data-theme='dark'] .device-selector {
+  background: var(--dark-secondary);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--dark-text);
+}
+
+[data-theme='dark'] .device-selector option {
+  background-color: var(--dark-secondary);
+  color: var(--dark-text);
+}
+
+[data-theme='dark'] .device-tooltip strong {
+  color: var(--dark-accent);
+}
+
+[data-theme='dark'] .device-tooltip p {
+  color: var(--dark-text);
 } 

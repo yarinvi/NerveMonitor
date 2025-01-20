@@ -8,7 +8,9 @@ import {
   FiLogIn, 
   FiSettings, 
   FiUser, 
-  FiChevronDown 
+  FiChevronDown,
+  FiMoon,
+  FiSun
 } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 import './Navbar.css';
@@ -20,6 +22,7 @@ function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -41,6 +44,11 @@ function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -50,6 +58,10 @@ function Navbar() {
       toast.error('Failed to logout');
       console.error('Failed to logout:', error);
     }
+  };
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
   };
 
   return (
@@ -71,9 +83,10 @@ function Navbar() {
           <Link to="/gallery" onClick={() => setIsMenuOpen(false)}>Gallery</Link>
           <Link to="/contact" onClick={() => setIsMenuOpen(false)}>Contact</Link>
           
+          {currentUser && <div className="nav-separator"></div>}
+          
           {currentUser ? (
             <>
-              <div className="nav-separator"></div>
               <Link to="/dashboard" onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
               <Link to="/device-settings" onClick={() => setIsMenuOpen(false)}>Device Settings</Link>
               <Link to="/attack-history" onClick={() => setIsMenuOpen(false)}>Attack History</Link>
@@ -134,10 +147,18 @@ function Navbar() {
             </>
           ) : (
             <Link to="/login" className="nav-button" onClick={() => setIsMenuOpen(false)}>
-              <FiLogIn size={18} />
+              <FiLogIn />
               Login
             </Link>
           )}
+          
+          <button 
+            className="theme-toggle"
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+          >
+            {theme === 'light' ? <FiMoon size={20} /> : <FiSun size={20} />}
+          </button>
         </div>
       </div>
     </nav>

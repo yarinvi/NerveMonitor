@@ -157,5 +157,19 @@ th {
 }
 
 [data-theme='dark'] tr:hover td {
-  background: rgba(220, 20, 60, 0.1);
+  background: var(--dark-secondary);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.attacks-table tr:hover td {
+  transform: scale(1.005);
+  filter: brightness(1.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme='dark'] .attacks-table tr:hover td {
+  background: var(--dark-secondary);
+  transform: scale(1.005);
+  filter: brightness(1.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 } 

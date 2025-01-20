@@ -11,8 +11,8 @@
   /* Dark theme */
   --dark-primary: #1a1a1a;
   --dark-secondary: #2d2d2d;
-  --dark-accent: #DC143C;
-  --dark-accent-hover: #ff1744;
+  --dark-accent: #2E7D32;
+  --dark-accent-hover: #4CAF50;
   --dark-text: #FFFFFF;
   --dark-text-secondary: #b3b3b3;
 }
@@ -23,6 +23,8 @@
   --white: var(--dark-secondary);
   --light-gray: var(--dark-primary);
   --dark-gray: var(--dark-text);
+  --hover-green: #1B5E20;
+  --hover-light-green: rgba(46, 125, 50, 0.2);
 }
 
 * {
@@ -168,4 +170,33 @@ body {
 
 .Toastify__progress-bar--info {
   background: linear-gradient(to right, #1976D2, #64B5F6);
+}
+
+[data-theme='dark'] .Toastify__toast-theme--light {
+  background: var(--dark-secondary);
+  color: var(--dark-text);
+}
+
+[data-theme='dark'] .Toastify__toast--success {
+  background: linear-gradient(to right, rgba(46, 125, 50, 0.3), var(--dark-secondary));
+  border-left: 6px solid var(--dark-accent);
+}
+
+[data-theme='dark'] .Toastify__toast--error {
+  background: linear-gradient(to right, rgba(211, 47, 47, 0.3), var(--dark-secondary));
+  border-left: 6px solid var(--primary-red);
+}
+
+[data-theme='dark'] .Toastify__toast--warning {
+  background: linear-gradient(to right, rgba(245, 124, 0, 0.3), var(--dark-secondary));
+  border-left: 6px solid #F57C00;
+}
+
+[data-theme='dark'] .Toastify__toast--info {
+  background: linear-gradient(to right, rgba(25, 118, 210, 0.3), var(--dark-secondary));
+  border-left: 6px solid #1976D2;
+}
+
+[data-theme='dark'] .Toastify__close-button:hover {
+  background: rgba(255, 255, 255, 0.1);
 }

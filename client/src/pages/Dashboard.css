@@ -121,8 +121,14 @@ td {
   background: var(--white);
 }
 
-tr:hover td {
-  background-color: rgba(46, 125, 50, 0.05);
+.history-table tr:hover td {
+  background: var(--white);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme='dark'] .history-table tr:hover td {
+  background: var(--dark-secondary);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .no-data {
@@ -244,7 +250,7 @@ tr:hover td {
 }
 
 .info-icon:hover {
-  color: var(--primary-green);
+  color: var(--dark-accent);
 }
 
 /* Style the dropdown options */

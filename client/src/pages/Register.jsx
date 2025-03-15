@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { register } from '../api/api';
+import { signUp } from '../api/auth';
 import './Register.css';
 import { toast } from 'react-toastify';
 
@@ -57,7 +57,7 @@ function Register() {
     }
 
     try {
-      await register({
+      await signUp({
         email: formData.email,
         password: formData.password,
         deviceId: formData.deviceId

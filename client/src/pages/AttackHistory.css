@@ -133,6 +133,34 @@ th {
   background: var(--dark-primary);
 }
 
+[data-theme='dark'] .filters-section {
+  background: var(--dark-secondary);
+}
+
+[data-theme='dark'] .filter-group label {
+  color: var(--dark-text);
+}
+
+[data-theme='dark'] .filter-group input,
+[data-theme='dark'] .filter-group select {
+  background: var(--dark-secondary);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--dark-text);
+}
+
+[data-theme='dark'] .attacks-table {
+  background: var(--dark-secondary);
+}
+
+[data-theme='dark'] th,
+[data-theme='dark'] td {
+  color: var(--dark-text);
+}
+
+[data-theme='dark'] .severity-badge.low {
+  background-color: var(--dark-accent);
+}
+
 [data-theme='dark'] .history-card {
   background: var(--dark-secondary);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
@@ -144,16 +172,6 @@ th {
 
 [data-theme='dark'] .history-table {
   background: var(--dark-primary);
-}
-
-[data-theme='dark'] th {
-  background: var(--dark-secondary);
-  color: var(--dark-text);
-}
-
-[data-theme='dark'] td {
-  background: var(--dark-secondary);
-  color: var(--dark-text);
 }
 
 [data-theme='dark'] tr:hover td {

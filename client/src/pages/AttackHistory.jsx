@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { useState, useEffect } from 'react';
-import { getDeviceData, getUserDevices } from '../api/api';
+import { getDeviceData, getUserDevices } from '../api/device';
 import LoadingSpinner from '../components/LoadingSpinner';
 import './AttackHistory.css';
 
@@ -72,25 +72,27 @@ function AttackHistory() {
       try {
         const response = await getDeviceData(selectedDevice);
         
-        // Handle nested data structure
+        // The history is directly in response.data.history
         const data = response.data;
         
-        if (data && data.data && data.data.history) {
-          const historyArray = Array.isArray(data.data.history) 
-            ? data.data.history 
-            : [data.data.history];
-          const attackData = historyArray
-            .filter(entry => entry.motor_state === 1)
-            .map(entry => ({
-              id: entry.id || Math.random().toString(36).substr(2, 9),
-              timestamp: new Date(entry.timestamp),
-              duration: entry.duration,
-              bpm: entry.bpm,
-              spo2: entry.spo2,
-              temperature: entry.internal_temperature,
-              severity: calculateSeverity(entry.bpm, entry.spo2)
-            }));
-          setAttacks(attackData);
+        if (data && data.history) {
+            // Since history might be a single object or an array
+            const historyArray = Array.isArray(data.history) 
+                ? data.history 
+                : [data.history];
+
+            const attackData = historyArray
+                .filter(entry => entry.motor_state === 1)
+                .map(entry => ({
+                    id: entry.id || Math.random().toString(36).substr(2, 9),
+                    timestamp: new Date(entry.timestamp),
+                    duration: entry.duration,
+                    bpm: entry.bpm,
+                    spo2: entry.spo2,
+                    temperature: entry.internal_temperature,
+                    severity: calculateSeverity(entry.bpm, entry.spo2)
+                }));
+            setAttacks(attackData);
         }
       } catch (err) {
         setError('Failed to load attack history');

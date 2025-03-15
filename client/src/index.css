@@ -11,8 +11,8 @@
   /* Dark theme */
   --dark-primary: #1a1a1a;
   --dark-secondary: #2d2d2d;
-  --dark-accent: #DC143C;
-  --dark-accent-hover: #ff1744;
+  --dark-accent: #1B5E20;  /* Dark green */
+  --dark-accent-hover: #2E7D32;  /* Slightly lighter green */
   --dark-text: #FFFFFF;
   --dark-text-secondary: #b3b3b3;
 }

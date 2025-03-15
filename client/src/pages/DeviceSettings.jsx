@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { useState, useEffect } from 'react';
-import { getDeviceData, updateDeviceSettings, getUserDevices } from '../api/api';
+import { getDeviceData, updateDeviceSettings, getUserDevices } from '../api/device';
 import Slider from '@mui/material/Slider';
 import { Tooltip, IconButton } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
@@ -11,12 +11,20 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import './DeviceSettings.css';
 
 function DeviceSettings() {
-  const [settings, setSettings] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
   const [devices, setDevices] = useState([]);
   const [selectedDevice, setSelectedDevice] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [showColorPicker, setShowColorPicker] = useState(false);
+  const [formData, setFormData] = useState({
+    bpm_threshold: 120,
+    spo2_threshold: 95,
+    temperature_threshold: 36.5,
+    sensitivity: 'medium',
+    led_color: '#4CAF50',
+    vibration_intensity: 50
+  });
+  const [originalSettings, setOriginalSettings] = useState(null);
 
   const [formRef, formInView] = useInView({
     triggerOnce: true,
@@ -68,31 +76,36 @@ function DeviceSettings() {
         }
       } catch (err) {
         setError('Failed to fetch devices');
+        toast.error('Failed to fetch devices');
       }
     };
     fetchDevices();
   }, []);
 
   useEffect(() => {
-    if (!selectedDevice) return;
-
     const fetchSettings = async () => {
+      if (!selectedDevice) return;
+
       try {
+        setLoading(true);
         const response = await getDeviceData(selectedDevice);
         
-        // Handle nested data structure
-        const settings = response.data.settings;
+        // Settings are at the top level of the response
+        const settings = response?.settings;
         
-        setSettings({
-          bpm_threshold: settings?.bpm_threshold !== undefined ? settings.bpm_threshold : 120,
-          spo2_threshold: settings?.spo2_threshold !== undefined ? settings.spo2_threshold : 95,
-          temperature_threshold: settings?.temperature_threshold !== undefined ? settings.temperature_threshold : 36.5,
-          sensitivity: settings?.sensitivity !== undefined ? settings.sensitivity : 'medium',
-          vibration_intensity: settings?.vibration_intensity !== undefined ? settings.vibration_intensity : 50,
-          led_color: settings?.led_color !== undefined ? settings.led_color : '#4CAF50'
-        });
+        if (!settings) {
+          console.error('Response structure:', response);
+          throw new Error('Invalid settings data received');
+        }
+        
+        // Update both formData and originalSettings with the received settings
+        setFormData(settings);
+        setOriginalSettings(settings);
+        setError('');
       } catch (err) {
-        setError('Failed to load device settings');
+        console.error('Error fetching settings:', err);
+        setError('Failed to fetch device settings');
+        toast.error('Failed to fetch device settings');
       } finally {
         setLoading(false);
       }
@@ -102,8 +115,8 @@ function DeviceSettings() {
   }, [selectedDevice]);
 
   const handleChange = (e) => {
-    setSettings({
-      ...settings,
+    setFormData({
+      ...formData,
       [e.target.name]: e.target.value
     });
   };
@@ -113,7 +126,7 @@ function DeviceSettings() {
     try {
       setError('');
       setLoading(true);
-      await updateDeviceSettings(selectedDevice, settings);
+      await updateDeviceSettings(selectedDevice, formData);
       toast.success('Settings updated successfully');
     } catch (err) {
       toast.error('Failed to update settings');
@@ -171,13 +184,9 @@ function DeviceSettings() {
     </motion.div>
   );
 
-  if (!selectedDevice) {
-    return <LoadingSpinner />;
-  }
-
-  if (loading) {
-    return <LoadingSpinner />;
-  }
+  if (loading) return <LoadingSpinner />;
+  if (error) return <div className="error">{error}</div>;
+  if (!devices.length) return <div>No devices available</div>;
 
   return (
     <div className="device-settings">
@@ -203,7 +212,7 @@ function DeviceSettings() {
                   led_color: '#4CAF50',
                   vibration_intensity: 50
                 };
-                setSettings(defaultSettings);
+                setFormData(defaultSettings);
                 try {
                   await updateDeviceSettings(selectedDevice, defaultSettings);
                   toast.info('Settings reset to defaults');
@@ -239,7 +248,7 @@ function DeviceSettings() {
             {renderSliderWithTooltip(
               'bpm_threshold',
               'Heart Rate Threshold',
-              settings.bpm_threshold,
+              formData.bpm_threshold,
               40,
               200,
               tooltips.bpm_threshold
@@ -248,7 +257,7 @@ function DeviceSettings() {
             {renderSliderWithTooltip(
               'spo2_threshold',
               'SpO2 Threshold',
-              settings.spo2_threshold,
+              formData.spo2_threshold,
               80,
               100,
               tooltips.spo2_threshold
@@ -257,7 +266,7 @@ function DeviceSettings() {
             {renderSliderWithTooltip(
               'temperature_threshold',
               'Temperature Threshold',
-              settings.temperature_threshold,
+              formData.temperature_threshold,
               20,
               40,
               tooltips.temperature_threshold,
@@ -280,7 +289,7 @@ function DeviceSettings() {
               <select
                 id="sensitivity"
                 name="sensitivity"
-                value={settings.sensitivity}
+                value={formData.sensitivity}
                 onChange={handleChange}
                 required
                 className="styled-select"
@@ -308,13 +317,13 @@ function DeviceSettings() {
               <div className="color-picker-wrapper">
                 <div 
                   className="color-preview"
-                  style={{ backgroundColor: settings.led_color }}
+                  style={{ backgroundColor: formData.led_color }}
                   onClick={() => setShowColorPicker(!showColorPicker)}
                 />
                 {showColorPicker && (
                   <div className="color-picker-popover">
                     <ChromePicker 
-                      color={settings.led_color}
+                      color={formData.led_color}
                       onChange={(color) => handleChange({ 
                         target: { name: 'led_color', value: color.hex } 
                       })}
@@ -339,7 +348,7 @@ function DeviceSettings() {
             >
               <div className="setting-header">
                 <label htmlFor="vibration_intensity">
-                  Vibration Intensity: {settings.vibration_intensity}%
+                  Vibration Intensity: {formData.vibration_intensity}%
                 </label>
                 <Tooltip title={tooltips.vibration_intensity} placement="top">
                   <IconButton size="small">
@@ -348,7 +357,7 @@ function DeviceSettings() {
                 </Tooltip>
               </div>
               <Slider
-                value={settings.vibration_intensity}
+                value={formData.vibration_intensity}
                 onChange={(_, value) => handleChange({ 
                   target: { name: 'vibration_intensity', value } 
                 })}

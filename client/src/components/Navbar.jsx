@@ -65,19 +65,11 @@ function Navbar() {
   };
 
   return (
-    <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
-      <div className="nav-container">
+    <nav className="navbar">
+      <div className="nav-content">
         <Link to="/" className="nav-logo">
           NerveMonitor
         </Link>
-        
-        <button 
-          className="hamburger" 
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          aria-label="Toggle menu"
-        >
-          {isMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
-        </button>
 
         <div className={`nav-links ${isMenuOpen ? 'active' : ''}`}>
           <Link to="/gallery" onClick={() => setIsMenuOpen(false)}>Gallery</Link>
@@ -93,73 +85,48 @@ function Navbar() {
               <div className="user-menu-container" ref={dropdownRef}>
                 <button 
                   className="menu-button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setDropdownOpen(!dropdownOpen);
-                  }}
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
                 >
-                  <div className="menu-button-content">
-                    <FiUser className="user-icon" />
-                    <span className="username">
-                      {currentUser?.email?.split('@')[0]}
-                    </span>
-                    <FiChevronDown className={`dropdown-arrow ${dropdownOpen ? 'rotate' : ''}`} />
-                  </div>
+                  <FiUser />
+                  <span>{currentUser?.email?.split('@')[0]}</span>
+                  <FiChevronDown className={`dropdown-arrow ${dropdownOpen ? 'rotate' : ''}`} />
                 </button>
 
                 <div className={`dropdown-menu ${dropdownOpen ? 'show' : ''}`}>
-                  <Link 
-                    to="/profile" 
-                    className="dropdown-item"
-                    onClick={() => {
-                      setDropdownOpen(false);
-                      setIsMenuOpen(false);
-                    }}
-                  >
-                    <FiUser className="dropdown-icon" />
-                    Profile
+                  <Link to="/profile" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
+                    <FiUser /> Profile
                   </Link>
-                  <Link 
-                    to="/device-settings" 
-                    className="dropdown-item"
-                    onClick={() => {
-                      setDropdownOpen(false);
-                      setIsMenuOpen(false);
-                    }}
-                  >
-                    <FiSettings className="dropdown-icon" />
-                    Settings
+                  <Link to="/device-settings" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
+                    <FiSettings /> Settings
                   </Link>
                   <div className="dropdown-divider" />
-                  <button 
-                    className="dropdown-item"
-                    onClick={() => {
-                      handleLogout();
-                      setDropdownOpen(false);
-                      setIsMenuOpen(false);
-                    }}
-                  >
-                    <FiLogOut className="dropdown-icon" />
-                    Logout
+                  <button className="dropdown-item" onClick={handleLogout}>
+                    <FiLogOut /> Logout
                   </button>
                 </div>
               </div>
+              <button 
+                className="theme-toggle"
+                onClick={toggleTheme}
+                aria-label="Toggle theme"
+              >
+                {theme === 'light' ? <FiMoon size={20} /> : <FiSun size={20} />}
+              </button>
             </>
           ) : (
             <Link to="/login" className="nav-button" onClick={() => setIsMenuOpen(false)}>
-              <FiLogIn />
-              Login
+              <FiLogIn /> Login
             </Link>
           )}
-          
-          <button 
-            className="theme-toggle"
-            onClick={toggleTheme}
-            aria-label="Toggle theme"
-          >
-            {theme === 'light' ? <FiMoon size={20} /> : <FiSun size={20} />}
-          </button>
         </div>
+
+        <button 
+          className="hamburger" 
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          {isMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+        </button>
       </div>
     </nav>
   );

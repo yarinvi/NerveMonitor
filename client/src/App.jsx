@@ -12,12 +12,14 @@ import PrivateRoute from './components/PrivateRoute';
 import AttackHistory from './pages/AttackHistory';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   return (
     <Router>
       <AuthProvider>
         <div className="App">
+          <ScrollToTop />
           <Navbar />
           <Routes>
             <Route path="/" element={<Home />} />

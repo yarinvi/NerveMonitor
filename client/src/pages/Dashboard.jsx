@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getDeviceData, getUserDevices } from '../api/api'; //important
+import { getDeviceData, getUserDevices } from '../api/device'; //important
 import './Dashboard.css';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
@@ -8,7 +8,6 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import { FiInfo } from 'react-icons/fi';
 import { Tooltip } from '@mui/material';
 import { socketService } from '../services/socketService';
-import { getAuthToken } from '../api/auth';
 
 function Dashboard() {
   const [devices, setDevices] = useState([]);
@@ -98,19 +97,16 @@ function Dashboard() {
         setLoading(true);
         const response = await getDeviceData(selectedDevice);
         
-        // Handle nested data structure
-        const data = response.data.data;  // Get the nested data object
+        const data = response.data;  // Remove the extra .data access
         
         const processedData = {
-          bpm: data?.bpm !== undefined ? data.bpm : '--',
-          spo2: data?.spo2 !== undefined ? data.spo2 : '--',
-          internal_temperature: data?.internal_temperature !== undefined ? data.internal_temperature : '--',
+          bpm: data?.bpm ?? '--',
+          spo2: data?.spo2 ?? '--',
+          internal_temperature: data?.internal_temperature ?? '--',
           motor_state: data?.motor_state ?? 0,
-          history: Array.isArray(data?.history) 
-            ? data.history 
-            : data?.history 
-              ? [data.history] 
-              : []
+          history: data?.history 
+            ? [data.history]  // Since history is an object, wrap it in array
+            : []
         };
         
         setDeviceData(processedData);
@@ -134,7 +130,9 @@ function Dashboard() {
         spo2: data.data.spo2 ?? '--',
         internal_temperature: data.data.internal_temperature ?? '--',
         motor_state: data.data.motor_state ?? 0,
-        history: data.data.history ? [data.data.history] : []
+        history: data.data.history 
+          ? [data.data.history]  // Since history is an object, wrap it in array
+          : []
       };
 
       setDeviceData(processedData);

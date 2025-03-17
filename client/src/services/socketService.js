@@ -5,11 +5,12 @@ const deviceListeners = new Map();
 
 const connect = () => {
   const serverUrl = process.env.NODE_ENV === 'production' 
-    ? 'https://nervemonitor.onrender.com' 
+    ? window.location.origin  // Use the current origin instead of hardcoded URL
     : 'http://localhost:3002';
     
   socket = io(serverUrl, {
-    withCredentials: true
+    withCredentials: true,
+    path: '/socket.io'  // Add explicit path
   });
 
   socket.on('connect_error', (error) => {

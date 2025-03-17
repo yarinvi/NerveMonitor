@@ -31,31 +31,28 @@ const getDeviceData = async (req, res) => {
             return res.status(403).json({ message: 'Device not found or unauthorized' });
         }
         
-        // Get both data and settings
-        const dataRef = db.ref(`devices/${deviceId}/data`);
-        const settingsRef = db.ref(`devices/${deviceId}/settings`);
+        // Get data, settings, and history
+        const deviceRootRef = db.ref(`devices/${deviceId}`);
+        const snapshot = await deviceRootRef.get();
         
-        const [dataSnapshot, settingsSnapshot] = await Promise.all([
-            dataRef.get(),
-            settingsRef.get()
-        ]);
+        const deviceData = snapshot.exists() ? snapshot.val() : {};
         
         const response = {
-            data: dataSnapshot.exists() ? dataSnapshot.val() : {
+            data: deviceData.data || {
                 bpm: 0,
                 spo2: 0,
                 internal_temperature: 0,
-                motor_state: 0,
-                history: []
+                motor_state: 0
             },
-            settings: settingsSnapshot.exists() ? settingsSnapshot.val() : {
+            settings: deviceData.settings || {
                 bpm_threshold: 120,
                 spo2_threshold: 95,
                 temperature_threshold: 36.5,
                 sensitivity: 'medium',
                 led_color: '#4CAF50',
                 vibration_intensity: 50
-            }
+            },
+            history: deviceData.history || []
         };
         
         res.status(200).json(response);

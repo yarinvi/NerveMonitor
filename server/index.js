@@ -10,13 +10,12 @@ const SocketManager = require('./services/socketManager');
 const path = require('path');
 
 app.use(cors({
-    origin: [
-        process.env.CLIENT_URL || 'http://localhost:5173',
-        'https://nervemonitor.onrender.com'
-    ],
+    origin: process.env.NODE_ENV === 'production'
+        ? ['https://nervemonitor.onrender.com']
+        : ['http://localhost:5173'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
 }));
 
 app.use(express.json());

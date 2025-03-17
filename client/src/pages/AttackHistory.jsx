@@ -72,14 +72,11 @@ function AttackHistory() {
       try {
         const response = await getDeviceData(selectedDevice);
         
-        // The history is directly in response.data.history
-        const data = response.data;
-        
-        if (data && data.history) {
-            // Since history might be a single object or an array
-            const historyArray = Array.isArray(data.history) 
-                ? data.history 
-                : [data.history];
+        if (response && response.history) {
+            // Since history is at the root level now
+            const historyArray = Array.isArray(response.history) 
+                ? response.history 
+                : [response.history];
 
             const attackData = historyArray
                 .filter(entry => entry.motor_state === 1)

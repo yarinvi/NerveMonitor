@@ -97,16 +97,12 @@ function Dashboard() {
         setLoading(true);
         const response = await getDeviceData(selectedDevice);
         
-        const data = response.data;  // Remove the extra .data access
-        
         const processedData = {
-          bpm: data?.bpm ?? '--',
-          spo2: data?.spo2 ?? '--',
-          internal_temperature: data?.internal_temperature ?? '--',
-          motor_state: data?.motor_state ?? 0,
-          history: data?.history 
-            ? [data.history]  // Since history is an object, wrap it in array
-            : []
+          bpm: response.data?.bpm ?? '--',
+          spo2: response.data?.spo2 ?? '--',
+          internal_temperature: response.data?.internal_temperature ?? '--',
+          motor_state: response.data?.motor_state ?? 0,
+          history: response.history || []  // Access history directly from response
         };
         
         setDeviceData(processedData);

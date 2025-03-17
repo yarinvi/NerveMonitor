@@ -4,11 +4,12 @@ const admin = require('firebase-admin');
 function createSocketManager(server) {
   const io = new Server(server, {
     cors: {
-      origin: [
-        process.env.CLIENT_URL || 'http://localhost:5173',
-        'https://nervemonitor.onrender.com'
-      ],
-      credentials: true
+      origin: process.env.NODE_ENV === 'production'
+        ? ['https://nervemonitor.onrender.com']
+        : ['http://localhost:5173'],
+      credentials: true,
+      methods: ['GET', 'POST'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
     }
   });
   
@@ -101,8 +102,7 @@ function createSocketManager(server) {
         bpm: 0,
         spo2: 0,
         internal_temperature: 0,
-        motor_state: 0,
-        history: []
+        motor_state: 0
       },
       settings: deviceData.settings || {
         bpm_threshold: 120,
@@ -111,7 +111,8 @@ function createSocketManager(server) {
         sensitivity: 'medium',
         led_color: '#4CAF50',
         vibration_intensity: 50
-      }
+      },
+      history: deviceData.history || []
     };
   }
 

@@ -4,7 +4,11 @@ let socket = null;
 const deviceListeners = new Map();
 
 const connect = () => {
-  socket = io('http://localhost:3002', {
+  const serverUrl = process.env.NODE_ENV === 'production' 
+    ? 'https://nervemonitor.onrender.com' 
+    : 'http://localhost:3002';
+    
+  socket = io(serverUrl, {
     withCredentials: true
   });
 

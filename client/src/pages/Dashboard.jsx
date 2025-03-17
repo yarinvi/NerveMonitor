@@ -126,9 +126,7 @@ function Dashboard() {
         spo2: data.data.spo2 ?? '--',
         internal_temperature: data.data.internal_temperature ?? '--',
         motor_state: data.data.motor_state ?? 0,
-        history: data.data.history 
-          ? [data.data.history]  // Since history is an object, wrap it in array
-          : []
+        history: data.history || deviceData.history || []
       };
 
       setDeviceData(processedData);

@@ -7,9 +7,10 @@ const authRoutes = require('./routes/auth');
 const deviceRoutes = require('./routes/device');
 const cors = require('cors');
 const SocketManager = require('./services/socketManager');
+const path = require('path');
 
 app.use(cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: [process.env.CLIENT_URL || 'http://localhost:5173', 'https://ovp-h8sz.onrender.com'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
@@ -21,13 +22,21 @@ app.use(cookieParser());
 // Initialize Firebase Admin first
 initializeFirebaseAdmin();
 
+// Serve static files from the public directory
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Initialize socket manager
 const server = http.createServer(app);
 new SocketManager(server);
 
-// Register routes
-app.use('/auth', authRoutes);
-app.use('/device', deviceRoutes);
+// Register routes with /api prefix
+app.use('/api/auth', authRoutes);
+app.use('/api/device', deviceRoutes);
+
+// Catch-all route for React app
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 const PORT = process.env.PORT || 3002;
 server.listen(PORT, () => {

@@ -1,5 +1,5 @@
 import api from './api'
-import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
+import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
 import { connectFB } from '../lib/connectFB'
 
 export const signUp = async (payload) => {
@@ -60,18 +60,6 @@ export const checkAuthStatus = async () => {
         return data.user;
     } catch (error) {
         const message = error.response?.data?.error || 'An error occurred while checking authentication status.';
-        throw new Error(message);
-    }
-};
-
-export const getAuthToken = async () => {
-    try {
-        const { data } = await api.get('/auth/token', {
-            withCredentials: true
-        });
-        return data.token;
-    } catch (error) {
-        const message = error.response?.data?.error || 'Failed to get authentication token';
         throw new Error(message);
     }
 };

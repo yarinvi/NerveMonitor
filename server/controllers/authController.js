@@ -1,5 +1,5 @@
 const admin = require('firebase-admin');
-const { getAuth, signInWithCustomToken, GoogleAuthProvider, signInWithPopup } = require('firebase/auth');
+const { getAuth, signInWithCustomToken, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } = require('firebase/auth');
 const { connectFB } = require('../lib/connectFB');
 
 const signup = async (req, res) => {
@@ -99,16 +99,16 @@ const login = async (req, res) => {
         }
 
         // Regular email/password login
-        userRecord = await admin.auth().getUserByEmail(email);
-        
-        // Create a custom token
-        const customToken = await admin.auth().createCustomToken(userRecord.uid);
-        
-        // Get an ID token using the custom token
-        const { auth } = connectFB();
-        
-        const userCredential = await signInWithCustomToken(auth, customToken);
-        idToken = await userCredential.user.getIdToken();
+        try {
+            // First verify the credentials with Firebase Auth
+            const { auth } = connectFB();
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            userRecord = await admin.auth().getUser(userCredential.user.uid);
+            idToken = await userCredential.user.getIdToken();
+        } catch (authError) {
+            console.error('Authentication failed:', authError);
+            return res.status(401).json({ error: 'Invalid email or password' });
+        }
         
         // Create a session cookie with the ID token
         const sessionCookie = await admin.auth().createSessionCookie(idToken, {

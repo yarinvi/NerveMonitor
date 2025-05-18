@@ -9,6 +9,7 @@ router.post('/login', login);
 router.post('/logout', logout);
 router.get('/check-status', authenticateFirebaseToken, checkAuthStatus);
 router.post('/google/callback', handleGoogleCallback);
+/*
 router.post('/set-token', async (req, res) => {
     try {
         const { idToken } = req.body;
@@ -37,5 +38,6 @@ router.post('/set-token', async (req, res) => {
         res.status(403).json({ error: error.message });
     }
 });
+*/
 
 module.exports = router;
